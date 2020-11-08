@@ -1,0 +1,4 @@
+{
+  "$schema": "https://unpkg.com/app-builder-lib@22.9.1/scheme.json",
+  "files": ["./build/**/*"]
+}
