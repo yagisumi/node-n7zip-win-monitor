@@ -7,7 +7,10 @@ const config: UserConfig = {
   root,
   outDir: 'build',
   optimizeDeps: {
-    exclude: [],
+    exclude: [
+      '@yagisumi/win-output-debug-string', //
+      '@yagisumi/e7ipc2-electron',
+    ],
   },
 }
 

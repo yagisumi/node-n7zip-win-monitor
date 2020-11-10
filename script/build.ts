@@ -90,11 +90,11 @@ async function serve() {
   watcher.addListener('event', (ev) => {
     // console.log(ev)
     if (ev.code === 'BUNDLE_START') {
-      getInputs(ev.input).forEach((src) => {
+      getInputs(ev.input as string[]).forEach((src) => {
         console.log(`${WATCH} build start: ${src}`)
       })
     } else if (ev.code === 'BUNDLE_END') {
-      getInputs(ev.input).forEach((src) => {
+      getInputs(ev.input as string[]).forEach((src) => {
         builtFlags[src] = true
         console.log(`${WATCH} build end: ${src}`)
       })

@@ -11,6 +11,7 @@ const external = [
   'path',
   'fs',
   'url',
+  '@yagisumi/win-output-debug-string',
 ]
 
 const plugins = [

@@ -1,9 +1,15 @@
 // copied from https://github.com/nklayman/vue-cli-plugin-electron-builder
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from './lib/createProtocol'
 import path from 'path'
+
+import { Commands, CHANNEL } from './lib/commands'
+import { handlers } from './lib/handlers'
+import { createServer } from '@yagisumi/e7ipc2-electron'
+const server = createServer<Commands>(CHANNEL, ipcMain)
+server.handle(handlers)
 
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
