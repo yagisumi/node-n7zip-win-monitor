@@ -11,7 +11,6 @@ let iid: NodeJS.Timeout | undefined = undefined
 let infos: DebugInfo[] = []
 
 function dispatch() {
-  console.log('dispatch')
   infos.forEach((info) => {
     callbacks.forEach((cb) => {
       try {
@@ -47,7 +46,6 @@ function stopDispatch() {
 
 async function start() {
   const r = await window.api.start()
-  console.log(r)
   if (r.ok) {
     state.value = r.value
     error.value = undefined
@@ -69,7 +67,6 @@ async function stop() {
 }
 
 function subscribe(cb: (info: DebugInfo) => void) {
-  console.log('subscribe')
   n += 1
   callbacks.set(n, cb)
   startDispatch()
