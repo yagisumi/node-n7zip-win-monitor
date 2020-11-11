@@ -5,7 +5,7 @@ const root = path.join(process.cwd(), 'src')
 
 const config: UserConfig = {
   root,
-  outDir: 'build',
+  outDir: path.resolve(root, '../build'),
   optimizeDeps: {
     exclude: [
       '@yagisumi/win-output-debug-string', //
