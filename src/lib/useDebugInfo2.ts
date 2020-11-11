@@ -2,21 +2,27 @@ import { reactive } from 'vue'
 import { useMonitor } from './useMonitor'
 import moment from 'moment'
 
-type ProcessItem = {
+export type ProcessRecord = {
+  message: string
+  addr: string | undefined
+  obj: AddrItem | undefined
+}
+
+export type ProcessItem = {
   id: string
   pid: number
   created: number
   date: string
-  records: string[]
+  records: ProcessRecord[]
   n_ready: number
   n_ok: number
   n_error: number
   manager: AddrItemManager
 }
 
-type AddrItemState = 'ready' | 'ok' | 'error'
+export type AddrItemState = 'ready' | 'ok' | 'error'
 
-type AddrItem = {
+export type AddrItem = {
   id: string
   addr: string
   num: number
@@ -130,6 +136,7 @@ type State = {
   addrItems: AddrItem[]
   selectedAddrId: string | undefined
   selectedAddr: string | undefined
+  processRecords: ProcessRecord[]
 }
 
 const state = reactive<State>({
@@ -138,6 +145,7 @@ const state = reactive<State>({
   addrItems: [],
   selectedAddrId: undefined,
   selectedAddr: undefined,
+  processRecords: [],
 })
 
 const IdProcessMap = new Map<string, ProcessItem>()
@@ -152,7 +160,7 @@ function createProcessItem(pid: number): ProcessItem {
     created,
     date,
     addrs: [],
-    records: [],
+    records: reactive([]),
     manager: new AddrItemManager(),
     n_ready: 0,
     n_ok: 0,
@@ -173,20 +181,29 @@ monitor.subscribe((info) => {
   let pitem: ProcessItem | undefined = undefined
   if (info.message === 'n7zip start') {
     pitem = createProcessItem(info.pid)
-    pitem.records.push(info.message)
+    pitem.records.push({ message: info.message, addr: undefined, obj: undefined })
   } else if (currentProcess !== undefined && currentProcess.pid === info.pid) {
     pitem = currentProcess
-    pitem.records.push(info.message)
+
+    const record: ProcessRecord = {
+      message: info.message,
+      addr: undefined,
+      obj: undefined,
+    }
 
     if (info.message.match(/(0x\w+): ([\s\S]+)/)) {
       const addr = RegExp.$1
       const rest = RegExp.$2
+      record.addr = addr
+      record.message = rest
 
       if (rest.match(/@ (\w+)/)) {
         const name = RegExp.$1
         const aitem = pitem.manager.get(addr, name)
         aitem.records.push(info.message)
+        record.obj = aitem
       } else if (rest.match(/(\+\+|--) (\w+) #(\d+)/)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const sign = RegExp.$1
         const name = RegExp.$2
         const count = RegExp.$3
@@ -196,6 +213,7 @@ monitor.subscribe((info) => {
         updateAddrItem(aitem)
         updateProcessItem(pitem)
         aitem.records.push(info.message)
+        record.obj = aitem
       } else if (rest.match(/([+-]) (\w+)/)) {
         const sign = RegExp.$1
         const name = RegExp.$2
@@ -203,6 +221,7 @@ monitor.subscribe((info) => {
           const aitem = pitem.manager.new(addr, name)
           aitem.n_construct += 1
           aitem.records.push(info.message)
+          record.obj = aitem
           updateProcessItem(pitem)
         } else {
           const aitem = pitem.manager.get(addr, name)
@@ -210,12 +229,16 @@ monitor.subscribe((info) => {
           updateAddrItem(aitem)
           updateProcessItem(pitem)
           aitem.records.push(info.message)
+          record.obj = aitem
         }
       } else {
         const aitem = pitem.manager.get(addr, name)
         aitem.records.push(info.message)
+        record.obj = aitem
       }
     }
+
+    pitem.records.push(record)
   }
 })
 
@@ -224,6 +247,7 @@ function selectProcessItem(id: string) {
   if (pitem !== undefined) {
     state.selectedProcessId = id
     state.addrItems = pitem.manager.items
+    state.processRecords = pitem.records
   }
 }
 
@@ -238,10 +262,16 @@ function selectAddrItem(id: string) {
   }
 }
 
+function clearAddrItem() {
+  state.selectedAddrId = undefined
+  state.selectedAddr = undefined
+}
+
 export function useDebugInfo() {
   return {
     state,
     selectAddrItem,
     selectProcessItem,
+    clearAddrItem,
   }
 }

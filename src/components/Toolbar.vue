@@ -3,26 +3,43 @@
   #monitor.button(:class='{ [monitorState]: true }', @click='changeMonitoring')
     span.mi {{ monitorState === "monitoring" ? "videocam" : "videocam_off" }}
     span.label {{ monitorLabel }}
-  #view-obj.button.view(:class='{ active: appView === "obj" }', @click='changeView')
-    span.mi view_comfy
-    span.label OBJ
   #view-list.button.view(:class='{ active: appView === "list" }', @click='changeView')
     span.mi reorder
     span.label LIST
+  #view-obj.button.view(:class='{ active: appView === "obj" }', @click='changeView')
+    span.mi view_comfy
+    span.label OBJ
+  #show-errors.button(:class='{ active: showErrors }', @click='changeShorErrors')
+    span.mi error_outline
+    span.label RDY&amp;ERR
+  #selected-addr.button(:class='{ active: !showErrors && selectedAddr }')
+    span.label {{ selectedAddr }}
+    span.mi.close(v-if='selectedAddr', @click='clearAddr') close
+    span.mi.temp(v-else) remove
 </template>
 
 <script lang="ts" setup>
 import { computed, toRef } from 'vue'
 import { useMonitor } from '../lib/useMonitor'
 import { useAppConfig } from '../lib/useAppConfig'
+import { useDebugInfo } from '../lib/useDebugInfo2'
 
 const monitor = useMonitor()
 const config = useAppConfig()
+const debug = useDebugInfo()
 
 export const appView = toRef(config, 'view')
+export const showErrors = toRef(config, 'showErrors')
+export const selectedAddr = toRef(debug.state, 'selectedAddr')
+
+export const clearAddr = debug.clearAddrItem
 
 export function changeView() {
   config.view = config.view === 'obj' ? 'list' : 'obj'
+}
+
+export function changeShorErrors() {
+  config.showErrors = !config.showErrors
 }
 
 export const monitorState = monitor.state
@@ -38,8 +55,6 @@ export const monitorLabel = computed(() => {
 })
 
 export async function changeMonitoring() {
-  console.log(monitor.state)
-  console.log(monitor.error)
   if (monitor.state.value === 'monitoring') {
     await monitor.stop()
   } else {
@@ -59,27 +74,12 @@ export async function changeMonitoring() {
   border-bottom: solid 1px #666666
   padding: 6px
 
-  #monitor
-    .label
-      display: inline-block
-      width: 90px
-      text-align: center
-
-  #view-obj
-    margin-left: 24px
-    margin-right: 6px
-
-  #view-obj, #view-list
-    .label
-      display: inline-block
-      width: 40px
-      text-align: center
-
   .button
     display: inline-block
     padding: 0px 4px
     cursor: pointer
     vertical-align: middle
+    user-select: none
     border: solid 1px #666666
     background-color: #eeeeee
 
@@ -102,4 +102,51 @@ export async function changeMonitoring() {
     &.view.active
       color: #ffffff
       background: #19bce0
+
+  #monitor
+    .label
+      display: inline-block
+      width: 90px
+      text-align: center
+
+  #view-list
+    margin-left: 16px
+    margin-right: 2px
+
+  #view-obj, #view-list
+    .label
+      display: inline-block
+      width: 40px
+      text-align: center
+
+  #show-errors
+    margin-left: 16px
+    color: gray
+
+    span.mi
+      padding-right: 4px
+
+    &.active
+      color: red
+      background: white
+
+  #selected-addr
+    margin-left: 16px
+    cursor: default
+    color: gray
+
+    .label
+      display: inline-block
+      width: 170px
+      text-align: center
+
+    span.close
+      cursor: pointer
+
+    span.temp
+      color: #eeeeee
+
+    &.active
+      background: white
+      color: black
 </style>

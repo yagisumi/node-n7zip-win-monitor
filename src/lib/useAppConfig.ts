@@ -4,10 +4,12 @@ export type ViewType = 'obj' | 'list'
 
 type State = {
   view: ViewType
+  showErrors: boolean
 }
 
 const state = reactive<State>({
-  view: 'obj',
+  view: 'list',
+  showErrors: false,
 })
 
 export function useAppConfig() {
