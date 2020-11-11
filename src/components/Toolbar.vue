@@ -22,7 +22,7 @@
 import { computed, toRef } from 'vue'
 import { useMonitor } from '../lib/useMonitor'
 import { useAppConfig } from '../lib/useAppConfig'
-import { useDebugInfo } from '../lib/useDebugInfo2'
+import { useDebugInfo } from '../lib/useDebugInfo'
 
 const monitor = useMonitor()
 const config = useAppConfig()

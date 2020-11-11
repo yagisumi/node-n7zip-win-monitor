@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useDebugInfo } from '../lib/useDebugInfo2'
+import { useDebugInfo } from '../lib/useDebugInfo'
 import moment from 'moment'
 
 const debug = useDebugInfo()

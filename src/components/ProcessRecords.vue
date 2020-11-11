@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useDebugInfo, AddrItem } from '../lib/useDebugInfo2'
+import { useDebugInfo, AddrItem } from '../lib/useDebugInfo'
 import { useAppConfig } from '../lib/useAppConfig'
 
 const debug = useDebugInfo()
