@@ -6,13 +6,14 @@ let cache: DebugInfo[] = []
 let state: MonitorState = 'ready'
 
 function start(): Result<MonitorState> {
-  if (state === 'ready') {
+  if (state !== 'monitoring') {
     const r = monitor.start((info) => {
       cache.push(info)
     })
     if (r.ok) {
       state = 'monitoring'
     } else {
+      state = 'error'
       return ERR(r.error)
     }
   }

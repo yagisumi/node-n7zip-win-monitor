@@ -4,6 +4,7 @@ import window from './api-window'
 
 const state = ref() as Ref<MonitorState>
 state.value = 'ready'
+const error = ref() as Ref<string | undefined>
 const callbacks = new Map<number, (info: DebugInfo) => void>()
 let n = 0
 let iid: NodeJS.Timeout | undefined = undefined
@@ -46,8 +47,13 @@ function stopDispatch() {
 
 async function start() {
   const r = await window.api.start()
+  console.log(r)
   if (r.ok) {
     state.value = r.value
+    error.value = undefined
+  } else {
+    state.value = 'error'
+    error.value = r.error.message
   }
 
   return r
@@ -82,6 +88,7 @@ function unsubscribe(id: number) {
 export function useMonitor() {
   return {
     state,
+    error,
     start,
     stop,
     subscribe,

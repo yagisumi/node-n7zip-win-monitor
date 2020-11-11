@@ -1,4 +1,5 @@
 <template>
+  <Toolbar />
   <ProcessFrame />
   <AddrFrame />
   <AddrDetails />
@@ -8,7 +9,7 @@
 import ProcessFrame from './components/ProcessFrame.vue'
 import AddrFrame from './components/AddrFrame.vue'
 import AddrDetails from './components/AddrDetails.vue'
-import window from './lib/api-window'
+import Toolbar from './components/Toolbar.vue'
 
 export default {
   name: 'App',
@@ -16,6 +17,7 @@ export default {
     ProcessFrame,
     AddrFrame,
     AddrDetails,
+    Toolbar,
   },
   mounted: async () => {},
 }
