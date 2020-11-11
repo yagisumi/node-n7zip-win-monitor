@@ -4,6 +4,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from './lib/createProtocol'
 import path from 'path'
+import { monitor } from '@yagisumi/win-output-debug-string'
 
 import { Commands, CHANNEL } from './lib/commands'
 import { handlers } from './lib/handlers'
@@ -57,6 +58,7 @@ function createWindow() {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
+  monitor.stop()
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {

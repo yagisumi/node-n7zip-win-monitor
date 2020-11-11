@@ -2,7 +2,7 @@ import { DefineCommands } from '@yagisumi/e7ipc2-electron'
 
 export const CHANNEL = 'monitor'
 
-export type MonitorState = 'monitoring' | 'ready'
+export type MonitorState = 'monitoring' | 'ready' | 'error'
 export type DebugInfo = {
   pid: number
   message: string

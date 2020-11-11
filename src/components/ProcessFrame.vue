@@ -7,29 +7,28 @@
     :class='{ selected: item.id === selectedId }'
   )
     .pid PID: {{ item.pid }}
-    .time {{ formatTime(item.created) }}
+    .time {{ item.date }}
+    .counts
+      span.ready RDY:{{ item.n_ready }}
+      span.ok OK:{{ item.n_ok }}
+      span.error ERR:{{ item.n_error }}
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useDebugInfo } from '../lib/useDebugInfo'
+import { useDebugInfo } from '../lib/useDebugInfo2'
 import moment from 'moment'
 
 const debug = useDebugInfo()
 
 export const processItems = debug.state.processItems
 export const selectedId = computed(() => {
-  return debug.state.selectedProcessItemId
+  return debug.state.selectedProcessId
 })
 
 export const items = computed(() => {
   return debug.state.processItems.slice().reverse()
 })
-
-export function formatTime(time: number) {
-  const date = moment(time)
-  return date.format('YYYY/MM/DD HH:mm:ss')
-}
 
 export const selectItem = debug.selectProcessItem
 </script>
@@ -52,4 +51,17 @@ export const selectItem = debug.selectProcessItem
 
     &.selected
       border-left: solid 4px #0073d6
+
+    .counts
+      span
+        margin-right: 6px
+
+        &.ready
+          border-bottom: solid 2px #49cdea
+
+        &.ok
+          border-bottom: solid 2px #12ce0f
+
+        &.error
+          border-bottom: solid 2px #ea49aa
 </style>

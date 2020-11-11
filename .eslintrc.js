@@ -33,6 +33,7 @@ module.exports = {
     'no-constant-condition': ['error', { checkLoops: false }],
     'no-shadow': 'error',
     'no-empty': ['warn', { allowEmptyCatch: true }],
+    'prefer-const': 'warn',
   },
   overrides: [
     {
