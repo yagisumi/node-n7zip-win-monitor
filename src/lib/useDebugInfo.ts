@@ -259,6 +259,8 @@ function selectProcessItem(id: string) {
     state.selectedProcessId = id
     state.addrItems = pitem.manager.items
     state.processRecords = pitem.records
+    state.selectedAddrId = undefined
+    state.selectedAddr = undefined
   }
 }
 
