@@ -175,6 +175,17 @@ function createProcessItem(pid: number): ProcessItem {
   return item
 }
 
+function clearProcesses() {
+  state.processRecords = []
+  state.addrItems = []
+  state.processItems.length = 0
+  IdProcessMap.clear()
+  currentProcess = undefined
+  state.selectedProcessId = undefined
+  state.selectedAddrId = undefined
+  state.selectedAddr = undefined
+}
+
 const monitor = useMonitor()
 monitor.start()
 monitor.subscribe((info) => {
@@ -255,7 +266,7 @@ function selectAddrItem(id: string) {
   if (state.selectedProcessId !== undefined) {
     const pitem = IdProcessMap.get(state.selectedProcessId)
     const aitem = pitem?.manager.getById(id)
-    if (pitem && aitem) {
+    if (pitem !== undefined && aitem !== undefined) {
       state.selectedAddrId = id
       state.selectedAddr = aitem.addr
     }
@@ -273,5 +284,6 @@ export function useDebugInfo() {
     selectAddrItem,
     selectProcessItem,
     clearAddrItem,
+    clearProcesses,
   }
 }

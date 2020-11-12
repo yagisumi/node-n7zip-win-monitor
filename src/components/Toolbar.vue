@@ -1,5 +1,7 @@
 <template lang="pug">
 #toolbar
+  #clear-processes.button(@click='clearProcesses')
+    span.label CLEAR
   #monitor.button(:class='{ [monitorState]: true }', @click='changeMonitoring')
     span.mi {{ monitorState === "monitoring" ? "videocam" : "videocam_off" }}
     span.label {{ monitorLabel }}
@@ -33,6 +35,7 @@ export const showErrors = toRef(config, 'showErrors')
 export const selectedAddr = toRef(debug.state, 'selectedAddr')
 
 export const clearAddr = debug.clearAddrItem
+export const clearProcesses = debug.clearProcesses
 
 export function changeView() {
   config.view = config.view === 'obj' ? 'list' : 'obj'
@@ -66,13 +69,14 @@ export async function changeMonitoring() {
 <style lang="stylus" scoped>
 #toolbar
   grid-row: 1
-  grid-column: 1 \/ 4
+  grid-column: 1 / 4
   background-color: #eeeeee
   font-size: 18px
   line-height: 24px
   border-top: solid 1px #666666
   border-bottom: solid 1px #666666
   padding: 6px
+  white-space: nowrap
 
   .button
     display: inline-block
@@ -149,4 +153,9 @@ export async function changeMonitoring() {
     &.active
       background: white
       color: black
+
+  #clear-processes
+    margin-right: 16px
+    background: white
+    color: #cc2727
 </style>
