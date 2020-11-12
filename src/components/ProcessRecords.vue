@@ -4,7 +4,7 @@
     v-for='(record, idx) in records',
     :class='{ [record.obj ? record.obj.state : "msg"]: true }'
   )
-    sapn.addr(v-if='record.addr')
+    span.addr(v-if='record.addr')
       a(href='#', @click.stop.prevent='selectAddr(record.obj)') {{ record.addr }}
       | :&nbsp;
     span {{ record.message }}
@@ -35,6 +35,9 @@ export const records = computed(() => {
 export function selectAddr(aitem?: AddrItem) {
   if (aitem) {
     debug.selectAddrItem(aitem.id)
+    if (config.showErrors) {
+      config.showErrors = false
+    }
   }
 }
 </script>
@@ -42,7 +45,7 @@ export function selectAddr(aitem?: AddrItem) {
 <style lang="stylus" scoped>
 #process-records
   grid-row: 2
-  grid-column: 2 \/ 4
+  grid-column: 2 / 4
   background-color: white
   overflow-y: scroll
 
